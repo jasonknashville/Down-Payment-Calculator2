@@ -1,433 +1,251 @@
-import React, { useState, useEffect } from 'react';
-import { AlertCircle, Mail } from 'lucide-react';
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Google Tag Manager -->
+  <script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-MH9X9NGV');
+  </script>
+  <!-- End Google Tag Manager -->
 
-// TN County Property Tax Rates (annual rate per $100 of assessed value)
-const TN_COUNTIES = {
-  'Anderson': 2.84, 'Bedford': 2.52, 'Benton': 2.31, 'Bledsoe': 2.18, 'Blount': 2.19,
-  'Bradley': 2.47, 'Campbell': 2.56, 'Cannon': 2.38, 'Carroll': 2.41, 'Carter': 2.33,
-  'Cheatham': 2.68, 'Chester': 2.44, 'Claiborne': 2.29, 'Clay': 2.15, 'Cocke': 2.27,
-  'Coffee': 2.58, 'Crockett': 2.36, 'Cumberland': 2.73, 'Davidson': 3.55, 'Decatur': 2.28,
-  'DeKalb': 2.34, 'Dickson': 2.61, 'Dyer': 2.48, 'Fayette': 2.89, 'Fentress': 2.12,
-  'Franklin': 2.43, 'Gibson': 2.53, 'Giles': 2.46, 'Grainger': 2.08, 'Greene': 2.24,
-  'Grundy': 2.17, 'Hamblen': 2.39, 'Hamilton': 2.97, 'Hancock': 1.98, 'Hardeman': 2.51,
-  'Hardin': 2.35, 'Hawkins': 2.26, 'Haywood': 2.54, 'Henderson': 2.49, 'Henry': 2.42,
-  'Hickman': 2.37, 'Houston': 2.21, 'Humphreys': 2.32, 'Jackson': 2.25, 'Jefferson': 2.16,
-  'Johnson': 2.11, 'Knox': 2.29, 'Lake': 2.67, 'Lauderdale': 2.58, 'Lawrence': 2.45,
-  'Lewis': 2.22, 'Lincoln': 2.51, 'Loudon': 2.13, 'McMinn': 2.41, 'McNairy': 2.39,
-  'Macon': 2.24, 'Madison': 2.78, 'Marion': 2.19, 'Marshall': 2.48, 'Maury': 2.64,
-  'Meigs': 2.07, 'Monroe': 2.21, 'Montgomery': 2.89, 'Moore': 2.14, 'Morgan': 2.18,
-  'Obion': 2.52, 'Overton': 2.27, 'Perry': 2.23, 'Pickett': 2.06, 'Polk': 2.15,
-  'Putnam': 2.57, 'Rhea': 2.24, 'Roane': 2.34, 'Robertson': 2.71, 'Rutherford': 2.97,
-  'Scott': 2.13, 'Sequatchie': 2.16, 'Sevier': 2.08, 'Shelby': 3.28, 'Smith': 2.31,
-  'Stewart': 2.26, 'Sullivan': 2.42, 'Sumner': 2.78, 'Tipton': 2.84, 'Trousdale': 2.33,
-  'Unicoi': 2.19, 'Union': 2.11, 'Van Buren': 2.09, 'Warren': 2.46, 'Washington': 2.51,
-  'Wayne': 2.28, 'Weakley': 2.44, 'White': 2.35, 'Williamson': 2.68, 'Wilson': 2.89
-};
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Down Payment + Monthly Payment Calculator</title>
 
-export default function DownPaymentCalculator() {
-  const [purchasePrice, setPurchasePrice] = useState(350000);
-  const [isFirstTime, setIsFirstTime] = useState(true);
-  const [downPaymentPercent, setDownPaymentPercent] = useState(3.5);
-  const [downPaymentDollar, setDownPaymentDollar] = useState(12250);
-  const [savings, setSavings] = useState(12250);
-  const [equity, setEquity] = useState(0);
-  const [gift401k, setGift401k] = useState(0);
-  const [interestRate, setInterestRate] = useState(6.25);
-  const [selectedCounty, setSelectedCounty] = useState('Davidson');
-  const [insurance, setInsurance] = useState(125);
-  const [showLowDownWarning, setShowLowDownWarning] = useState(false);
-  const [email, setEmail] = useState('');
-  const [emailSent, setEmailSent] = useState(false);
-
-  useEffect(() => {
-    // Initialize Google Tag Manager
-    if (typeof window !== 'undefined' && !window.dataLayer) {
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){window.dataLayer.push(arguments);}
-      window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', 'GTM-MH9X9NGV');
-      
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = 'https://www.googletagmanager.com/gtag/js?id=GTM-MH9X9NGV';
-      document.head.appendChild(script);
+  <style>
+    :root{
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --accent:#1f3c88;
+      --soft-accent:#eef2ff;
+      --radius:14px;
     }
-  }, []);
 
-  useEffect(() => {
-    if (isFirstTime) {
-      setDownPaymentPercent(3.5);
-      setEquity(0);
-    } else {
-      setDownPaymentPercent(5);
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: var(--bg);
+      color:var(--text);
+      padding: 28px 20px 40px;
     }
-  }, [isFirstTime]);
 
-  useEffect(() => {
-    const dollarAmount = (purchasePrice * downPaymentPercent) / 100;
-    setDownPaymentDollar(Math.round(dollarAmount));
-  }, [purchasePrice, downPaymentPercent]);
+    .wrap{max-width:1050px;margin:0 auto;}
 
-  useEffect(() => {
-    const total = savings + equity + gift401k;
-    setDownPaymentDollar(total);
-    const percent = (total / purchasePrice) * 100;
-    setDownPaymentPercent(parseFloat(percent.toFixed(2)));
-    
-    if (percent < 3.5 && percent > 0) {
-      setShowLowDownWarning(true);
-    } else {
-      setShowLowDownWarning(false);
+    header{
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:flex-start;
+      margin-bottom:22px;
     }
-  }, [savings, equity, gift401k, purchasePrice]);
 
-  const handlePercentChange = (value) => {
-    const percent = parseFloat(value) || 0;
-    setDownPaymentPercent(percent);
-    const dollarAmount = (purchasePrice * percent) / 100;
-    setDownPaymentDollar(Math.round(dollarAmount));
-    
-    const remaining = Math.round(dollarAmount);
-    if (isFirstTime) {
-      setSavings(Math.round(remaining / 2));
-      setGift401k(remaining - Math.round(remaining / 2));
-      setEquity(0);
-    } else {
-      setSavings(Math.round(remaining / 3));
-      setEquity(Math.round(remaining / 3));
-      setGift401k(remaining - Math.round(remaining / 3) - Math.round(remaining / 3));
+    h1{
+      font-size:22px;
+      margin:0 0 6px 0;
+      font-weight:600;
     }
-  };
 
-  const handleDollarChange = (value) => {
-    const dollarAmount = parseFloat(value) || 0;
-    setDownPaymentDollar(dollarAmount);
-    const percent = (dollarAmount / purchasePrice) * 100;
-    setDownPaymentPercent(parseFloat(percent.toFixed(2)));
-  };
-
-  const loanAmount = purchasePrice - downPaymentDollar;
-  const monthlyRate = interestRate / 100 / 12;
-  const numPayments = 360;
-  const monthlyPI = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
-  
-  const assessedValue = purchasePrice * 0.25;
-  const taxRate = TN_COUNTIES[selectedCounty];
-  const annualTax = (assessedValue / 100) * taxRate;
-  const monthlyTax = annualTax / 12;
-  
-  const totalMonthlyPayment = monthlyPI + monthlyTax + insurance;
-
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const handleEmailResults = () => {
-    if (email && email.includes('@')) {
-      // Track email submission in GTM
-      if (window.gtag) {
-        window.gtag('event', 'email_results', {
-          'event_category': 'calculator',
-          'event_label': 'down_payment_calculator',
-          'user_email': email
-        });
-      }
-      
-      setEmailSent(true);
-      setTimeout(() => setEmailSent(false), 3000);
-      
-      // In production, this would send to your backend
-      console.log('Email results to:', email);
-      console.log('Results:', {
-        purchasePrice,
-        downPaymentDollar,
-        downPaymentPercent,
-        isFirstTime,
-        monthlyPayment: totalMonthlyPayment,
-        county: selectedCounty
-      });
+    .sub{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
     }
-  };
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-6 md:p-8">
-            <h1 className="text-3xl font-normal text-gray-800 mb-2">
-              Down Payment Calculator
-            </h1>
-            <p className="text-gray-600 mb-6">
-              Plan your home purchase with confidence — calculate your down payment and monthly costs.
-            </p>
-            
-            <div className="flex flex-wrap gap-2 mb-6">
-              <span className="inline-block px-3 py-1 bg-blue-50 text-blue-700 rounded text-sm">
-                Current rate default: 6.25%
-              </span>
-              <span className="inline-block px-3 py-1 bg-blue-50 text-blue-700 rounded text-sm">
-                No email or phone required to calculate
-              </span>
-            </div>
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:20px;
+    }
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Left Column - Inputs */}
-              <div className="space-y-6">
-                <div className="pb-6 border-b border-gray-200">
-                  <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">
-                    Home Details
-                  </h2>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Home price
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                        <input
-                          type="text"
-                          value={purchasePrice.toLocaleString()}
-                          onChange={(e) => setPurchasePrice(parseInt(e.target.value.replace(/,/g, '')) || 0)}
-                          className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                    </div>
+    @media (max-width:920px){
+      .grid{grid-template-columns:1fr;}
+    }
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Down payment %
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="number"
-                            step="0.1"
-                            value={downPaymentPercent}
-                            onChange={(e) => handlePercentChange(e.target.value)}
-                            className="w-full pr-6 pl-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">%</span>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">Of purchase price</p>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          &nbsp;
-                        </label>
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                          <input
-                            type="text"
-                            value={downPaymentDollar.toLocaleString()}
-                            onChange={(e) => handleDollarChange(e.target.value.replace(/,/g, ''))}
-                            className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:18px;
+    }
 
-                {showLowDownWarning && (
-                  <div className="bg-amber-50 border border-amber-200 p-3 rounded flex gap-2">
-                    <AlertCircle className="text-amber-600 flex-shrink-0 mt-0.5" size={18} />
-                    <p className="text-sm text-amber-800">
-                      There are loan options available for less than 3.5% down. Please inquire for more information.
-                    </p>
-                  </div>
-                )}
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:14px;
+    }
 
-                <div className="pb-6 border-b border-gray-200">
-                  <div className="flex items-center justify-between mb-4">
-                    <label className="text-sm font-medium text-gray-700">
-                      First time home buyer?
-                    </label>
-                    <button
-                      onClick={() => setIsFirstTime(!isFirstTime)}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        isFirstTime ? 'bg-blue-600' : 'bg-gray-300'
-                      }`}
-                    >
-                      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        isFirstTime ? 'translate-x-6' : 'translate-x-1'
-                      }`} />
-                    </button>
-                  </div>
+    .section-title h2{
+      font-size:13px;
+      letter-spacing:.5px;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin:0;
+      font-weight:600;
+    }
 
-                  <div className="space-y-3 bg-gray-50 p-4 rounded">
-                    <div>
-                      <label className="block text-sm text-gray-600 mb-1">Savings</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                        <input
-                          type="text"
-                          value={savings.toLocaleString()}
-                          onChange={(e) => setSavings(parseInt(e.target.value.replace(/,/g, '')) || 0)}
-                          className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                    </div>
+    .mini{
+      font-size:12px;
+      color:var(--muted);
+    }
 
-                    {!isFirstTime && (
-                      <div>
-                        <label className="block text-sm text-gray-600 mb-1">
-                          Equity or sale proceeds
-                        </label>
-                        <div className="relative">
-                          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                          <input
-                            type="text"
-                            value={equity.toLocaleString()}
-                            onChange={(e) => setEquity(parseInt(e.target.value.replace(/,/g, '')) || 0)}
-                            className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </div>
-                      </div>
-                    )}
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin:14px 0;
+    }
 
-                    <div>
-                      <label className="block text-sm text-gray-600 mb-1">401k/Gift funds</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                        <input
-                          type="text"
-                          value={gift401k.toLocaleString()}
-                          onChange={(e) => setGift401k(parseInt(e.target.value.replace(/,/g, '')) || 0)}
-                          className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    @media (max-width:560px){
+      .row{grid-template-columns:1fr;}
+    }
 
-                <div className="pb-6 border-b border-gray-200">
-                  <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">
-                    Mortgage Interest Rates
-                  </h2>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Today's rate
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        step="0.125"
-                        value={interestRate}
-                        onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
-                        className="w-full pr-6 pl-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                      <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">%</span>
-                    </div>
-                  </div>
-                </div>
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+      font-weight:500;
+    }
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tennessee County
-                    </label>
-                    <select
-                      value={selectedCounty}
-                      onChange={(e) => setSelectedCounty(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      {Object.keys(TN_COUNTIES).sort().map(county => (
-                        <option key={county} value={county}>{county} County</option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Tax rates estimated higher to account for city taxes
-                    </p>
-                  </div>
+    input, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fafafa;
+      font-size:14px;
+      outline:none;
+    }
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Homeowners insurance
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                      <input
-                        type="number"
-                        value={insurance}
-                        onChange={(e) => setInsurance(parseFloat(e.target.value) || 0)}
-                        className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">Monthly amount</p>
-                  </div>
-                </div>
-              </div>
+    input:focus, select:focus{
+      border-color:#c7d2fe;
+      background:#fff;
+    }
 
-              {/* Right Column - Results */}
-              <div>
-                <div className="bg-gray-50 rounded-lg p-6 sticky top-8">
-                  <h2 className="text-sm font-medium text-gray-700 mb-4">Your estimated costs</h2>
-                  
-                  <div className="space-y-4 mb-6">
-                    <div className="pb-4 border-b border-gray-200">
-                      <p className="text-sm text-gray-600 mb-1">Estimated monthly payment</p>
-                      <p className="text-4xl font-light text-gray-900">{formatCurrency(totalMonthlyPayment)}</p>
-                    </div>
+    .subgrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:12px;
+    }
 
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Principal & Interest</span>
-                        <span className="text-gray-900">{formatCurrency(monthlyPI)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Property Tax</span>
-                        <span className="text-gray-900">{formatCurrency(monthlyTax)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Homeowners Insurance</span>
-                        <span className="text-gray-900">{formatCurrency(insurance)}</span>
-                      </div>
-                    </div>
+    @media (max-width:560px){
+      .subgrid{grid-template-columns:1fr;}
+    }
 
-                    <div className="pt-4 border-t border-gray-200">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Loan amount</span>
-                        <span className="text-gray-900 font-medium">{formatCurrency(loanAmount)}</span>
-                      </div>
-                    </div>
-                  </div>
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:10px;
+      line-height:1.4;
+    }
 
-                  <div className="pt-4 border-t border-gray-200">
-                    <p className="text-xs text-gray-500 mb-3">
-                      Want help interpreting your numbers or plugging in more assumptions? Reach out and we can review your situation together.
-                    </p>
-                    
-                    <div className="space-y-2">
-                      <input
-                        type="email"
-                        placeholder="Your email address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                      <button
-                        onClick={handleEmailResults}
-                        className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded text-sm font-medium transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Mail size={16} />
-                        {emailSent ? 'Results Sent!' : 'Email Me My Results'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+    .note{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      background:#fff7ed;
+      border:1px solid #fed7aa;
+      font-size:12px;
+      display:none;
+    }
+
+    .danger{
+      background:#fef2f2;
+      border:1px solid #fecaca;
+    }
+
+    .out{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    @media (max-width:560px){
+      .out{grid-template-columns:1fr;}
+    }
+
+    .kpi{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      background:#fafafa;
+    }
+
+    .kpi .k{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      color:var(--muted);
+    }
+
+    .kpi .v{
+      font-size:18px;
+      font-weight:700;
+      margin-top:6px;
+    }
+
+    .kpi .s{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    footer{
+      margin-top:14px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .pill{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .toggle{
+      display:inline-flex;
+      border:1px solid var(--border);
+      border-radius:999px;
+      overflow:hidden;
+      margin-left:8px;
+    }
+
+    .toggle button{
+      border:0;
+      padding:7px 12px;
+      font-size:12px;
+      background:#fff;
+      cursor:pointer;
+    }
+
+    .toggle button.active{
+      background:var(--soft-accent);
+      font-weight:600;
+    }
+
+    .btn{
+      margin-left:8px;
+      padding:7px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:12px;
+      cursor:pointer;
+    }
+
+    .btn:hover{
+      background:#f3f4f6;
+    }
+  </style>
+</head>
