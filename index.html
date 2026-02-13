@@ -1,18 +1,19 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <!-- Google Tag Manager -->
-  <script>
-  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-MH9X9NGV');
-  </script>
+<!-- Google Tag Manager -->
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MH9X9NGV');
+</script>
+<!-- End Google Tag Manager -->
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Down Payment + Monthly Payment Calculator</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Down Payment + Monthly Payment Calculator</title>
 
 <style>
 :root{
@@ -29,7 +30,7 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   background:linear-gradient(180deg,#fff,var(--bg));
   color:var(--text);
 }
@@ -144,4 +145,187 @@ footer{font-size:12px;color:var(--muted);margin-top:16px}
 <body>
 <div class="topbar"></div>
 
-<!-- KEEPING YOUR ORIGINAL BODY + SCRIPT EXACTLY BELOW -->
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Down Payment + Monthly Payment Calculator</h1>
+    <div class="sub">Friendly for first-time buyers and repeat buyers. Down payment can be entered as % or $, and sub-sources roll up automatically.</div>
+  </div>
+  <div class="rightTop">
+    <span class="mini">First-Time Buyer?</span>
+    <div class="toggle">
+      <button id="ftbYes" type="button">Yes</button>
+      <button id="ftbNo" type="button" class="active">No</button>
+    </div>
+    <button class="btn" id="resetBtn">Reset</button>
+  </div>
+</header>
+
+<div class="grid">
+
+<section class="card">
+<div class="section-title">
+  <h2>Inputs</h2>
+  <div class="mini">Defaults: FTB 3.5% • Repeat 5% • Rate 6.25% • HOI $125/mo</div>
+</div>
+
+<div class="row">
+  <div>
+    <label>Estimated Home Purchase Price</label>
+    <input id="price" value="400000">
+  </div>
+  <div>
+    <label>Loan Term</label>
+    <select id="termYears">
+      <option value="30" selected>30-year fixed</option>
+      <option value="15">15-year fixed</option>
+    </select>
+  </div>
+</div>
+
+<div class="row">
+  <div>
+    <label>Down Payment (%)</label>
+    <input id="dpPct" value="5">
+  </div>
+  <div>
+    <label>Down Payment ($)</label>
+    <input id="dpAmt">
+  </div>
+</div>
+
+<div id="lowDpNote" class="note">
+Heads up: there are loan options available for less than 3.5% down.
+</div>
+
+<div class="row">
+  <div>
+    <label>Interest Rate (%)</label>
+    <input id="rate" value="6.25">
+  </div>
+  <div>
+    <label>Homeowners Insurance ($/month)</label>
+    <input id="hoi" value="125">
+  </div>
+</div>
+
+<div class="section-title" style="margin-top:14px;">
+<h2>Property Taxes</h2>
+<div class="mini">Uses rate per $100 of assessed value (TN residential assessed = 25%).</div>
+</div>
+
+<div class="row">
+  <div>
+    <label>TN County</label>
+    <select id="county"></select>
+  </div>
+  <div>
+    <label>Inside City / Special District</label>
+    <select id="district"></select>
+  </div>
+</div>
+
+<div class="row">
+  <div>
+    <label>Optional City Add-on</label>
+    <select id="cityAddon"></select>
+  </div>
+  <div>
+    <label>Tax Rate Override</label>
+    <input id="taxRateOverride">
+  </div>
+</div>
+
+</section>
+
+<aside class="card">
+<div class="section-title">
+  <h2>Results</h2>
+  <div class="mini">Estimated (not a quote)</div>
+</div>
+
+<div class="out">
+  <div class="kpi">
+    <div class="k">Down Payment</div>
+    <div class="v" id="kpiDp">$0</div>
+    <div class="s" id="kpiDpPct">0%</div>
+  </div>
+  <div class="kpi">
+    <div class="k">Loan Amount</div>
+    <div class="v" id="kpiLoan">$0</div>
+    <div class="s" id="kpiTermRate"></div>
+  </div>
+  <div class="kpi">
+    <div class="k">Principal + Interest</div>
+    <div class="v" id="kpiPI">$0/mo</div>
+  </div>
+  <div class="kpi">
+    <div class="k">Taxes + Insurance</div>
+    <div class="v" id="kpiTI">$0/mo</div>
+    <div class="s" id="kpiTaxRate"></div>
+  </div>
+</div>
+
+<div class="kpi" style="margin-top:12px;">
+  <div class="k">Estimated Total Monthly Payment</div>
+  <div class="v" id="kpiTotal">$0/mo</div>
+</div>
+
+</aside>
+
+</div>
+</div>
+
+<div class="bottombar"></div>
+
+<script>
+(function(){
+const $ = id=>document.getElementById(id);
+const toNum=v=>parseFloat(String(v||"").replace(/[$, ]/g,''))||0;
+const fmt=n=>n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+const TAX={
+Davidson:{districts:[{key:"USD",rate:2.814}],cityAddons:[{key:"none",add:0}]}
+};
+const els={
+price:$("price"),term:$("termYears"),dpPct:$("dpPct"),dpAmt:$("dpAmt"),
+rate:$("rate"),hoi:$("hoi"),county:$("county"),
+district:$("district"),cityAddon:$("cityAddon"),
+override:$("taxRateOverride"),
+kpiDp:$("kpiDp"),kpiDpPct:$("kpiDpPct"),
+kpiLoan:$("kpiLoan"),kpiTermRate:$("kpiTermRate"),
+kpiPI:$("kpiPI"),kpiTI:$("kpiTI"),
+kpiTaxRate:$("kpiTaxRate"),kpiTotal:$("kpiTotal")
+};
+function monthlyPI(p,r,y){
+const m=r/100/12,n=y*12;
+return p*(m*Math.pow(1+m,n))/(Math.pow(1+m,n)-1);
+}
+function recalc(){
+const price=toNum(els.price.value);
+const dp=price*(toNum(els.dpPct.value)/100);
+els.dpAmt.value=Math.round(dp);
+const loan=price-dp;
+const pi=monthlyPI(loan,toNum(els.rate.value),parseInt(els.term.value));
+const taxRate=toNum(els.override.value)||2.814;
+const taxes=(price*.25/100*taxRate)/12;
+const ti=taxes+toNum(els.hoi.value);
+const total=pi+ti;
+els.kpiDp.textContent=fmt(dp);
+els.kpiDpPct.textContent=els.dpPct.value+"%";
+els.kpiLoan.textContent=fmt(loan);
+els.kpiTermRate.textContent=els.term.value+"y • "+els.rate.value+"%";
+els.kpiPI.textContent=fmt(pi)+"/mo";
+els.kpiTI.textContent=fmt(ti)+"/mo";
+els.kpiTaxRate.textContent="Tax rate: "+taxRate;
+els.kpiTotal.textContent=fmt(total)+"/mo";
+}
+["price","dpPct","rate","hoi","termYears","taxRateOverride"].forEach(id=>{
+$(id).addEventListener("input",recalc);
+});
+recalc();
+})();
+</script>
+
+</body>
+</html>
