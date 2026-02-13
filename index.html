@@ -22,7 +22,6 @@
       --text:#1f2937;
       --muted:#6b7280;
       --border:#e5e7eb;
-      --accent:#1f3c88;
       --soft-accent:#eef2ff;
       --radius:14px;
     }
@@ -249,3 +248,124 @@
     }
   </style>
 </head>
+
+<body>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MH9X9NGV"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <div class="wrap">
+
+    <header>
+      <div>
+        <h1>Down Payment + Monthly Payment Calculator</h1>
+        <div class="sub">
+          Friendly for first-time buyers and repeat buyers. Down payment can be entered as <b>%</b> or <b>$</b>, and sub-sources roll up automatically.
+        </div>
+      </div>
+      <div>
+        <span class="pill">First-Time Buyer?</span>
+        <div class="toggle">
+          <button id="ftbYes" type="button">Yes</button>
+          <button id="ftbNo" type="button" class="active">No</button>
+        </div>
+        <button class="btn" type="button" id="resetBtn">Reset</button>
+      </div>
+    </header>
+
+    <div class="grid">
+
+      <!-- LEFT SIDE -->
+      <section class="card">
+        <div class="section-title">
+          <h2>Inputs</h2>
+          <div class="mini">Defaults: FTB 3.5% • Repeat 5% • Rate 6.25% • HOI $125/mo</div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="price">Estimated Home Purchase Price</label>
+            <input id="price" value="400000">
+          </div>
+          <div>
+            <label for="termYears">Loan Term</label>
+            <select id="termYears">
+              <option value="30" selected>30-year fixed</option>
+              <option value="15">15-year fixed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="dpPct">Down Payment (%)</label>
+            <input id="dpPct" value="5">
+          </div>
+          <div>
+            <label for="dpAmt">Down Payment ($)</label>
+            <input id="dpAmt">
+          </div>
+        </div>
+
+        <div id="lowDpNote" class="note">
+          Heads up: there are loan options available for <b>less than 3.5% down</b>.
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="rate">Interest Rate (%)</label>
+            <input id="rate" value="6.25">
+          </div>
+          <div>
+            <label for="hoi">Homeowners Insurance ($/month)</label>
+            <input id="hoi" value="125">
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT SIDE -->
+      <aside class="card">
+        <div class="section-title">
+          <h2>Results</h2>
+          <div class="mini">Estimated (not a quote)</div>
+        </div>
+
+        <div class="out">
+          <div class="kpi">
+            <div class="k">Down Payment</div>
+            <div class="v" id="kpiDp">$0</div>
+            <div class="s" id="kpiDpPct">0%</div>
+          </div>
+
+          <div class="kpi">
+            <div class="k">Loan Amount</div>
+            <div class="v" id="kpiLoan">$0</div>
+            <div class="s" id="kpiTermRate">30y • 6.25%</div>
+          </div>
+
+          <div class="kpi">
+            <div class="k">Principal + Interest</div>
+            <div class="v" id="kpiPI">$0/mo</div>
+          </div>
+
+          <div class="kpi">
+            <div class="k">Taxes + Insurance</div>
+            <div class="v" id="kpiTI">$0/mo</div>
+          </div>
+        </div>
+
+        <div class="kpi" style="margin-top:12px;">
+          <div class="k">Estimated Total Monthly Payment</div>
+          <div class="v" id="kpiTotal">$0/mo</div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ORIGINAL SCRIPT -->
+  <script>
+    /* Your exact original DPC script can go here unchanged */
+  </script>
+
+</body>
+</html>
